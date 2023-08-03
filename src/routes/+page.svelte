@@ -19,14 +19,8 @@
 		}
 	});
 
-	let todos = [
-		{ id: 1, done: false, description: 'write some docs' },
-		{ id: 2, done: false, description: 'start writing JSConf talk' },
-		{ id: 3, done: true, description: 'buy some milk' },
-		{ id: 4, done: false, description: 'mow the lawn' },
-		{ id: 5, done: false, description: 'feed the turtle' },
-		{ id: 6, done: false, description: 'fix some bugs' }
-	];
+	export let data;
+	let todos: { completed: boolean; id: number; description: string }[] = data.data;
 
 	let uid = todos.length + 1;
 
@@ -35,17 +29,21 @@
 		const params = new FormData();
 		params.append('description', input.value);
 
-		fetch('/api/create-activity', {
+		fetch('/api/activity/create', {
 			method: 'post',
 			body: params
-		}).then((data) => {
-			console.log('fetched');
-		});
+		})
+			.then((data) => {
+				console.log('Added activity');
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 
 		// Add to the list
 		const todo = {
 			id: uid++,
-			done: false,
+			completed: false,
 			description: input.value
 		};
 
@@ -73,9 +71,9 @@
 
 	<div class="left">
 		<h2>Todo</h2>
-		{#each todos.filter((t) => !t.done) as todo (todo.id)}
+		{#each todos.filter((t) => !t.completed) as todo (todo.id)}
 			<label in:receive={{ key: todo.id }} out:send={{ key: todo.id }} animate:flip>
-				<input type="checkbox" bind:checked={todo.done} />
+				<input type="checkbox" bind:checked={todo.completed} />
 				{todo.description}
 				<button on:click={() => remove(todo)}>x</button>
 			</label>
@@ -84,9 +82,9 @@
 
 	<div class="right">
 		<h2>Done</h2>
-		{#each todos.filter((t) => t.done) as todo (todo.id)}
+		{#each todos.filter((t) => t.completed) as todo (todo.id)}
 			<label in:receive={{ key: todo.id }} out:send={{ key: todo.id }} animate:flip>
-				<input type="checkbox" bind:checked={todo.done} />
+				<input type="checkbox" bind:checked={todo.completed} />
 				{todo.description}
 				<button on:click={() => remove(todo)}>x</button>
 			</label>

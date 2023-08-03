@@ -3,12 +3,12 @@ import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }): Promise<Response> => {
-    // Get data
+	// Get data
 	const data = await request.formData();
 	const description = data.get('description') as string;
 	const completed = false; // By default when you create an activity it will be not completed.
 
-    // Check for errors
+	// Check for errors
 	if (!description) throw error(400, "Missing parameter: 'description'.");
 
 	// Create the activity
@@ -21,8 +21,7 @@ export const POST: RequestHandler = async ({ request }): Promise<Response> => {
 				}
 			})
 			.then((data) => {
-				console.log(data);
-				resolve(new Response(null, { status: 201 }));
+				resolve(new Response(JSON.stringify(data), { status: 201 }));
 			})
 			.catch((err) => {
 				console.error(err);
