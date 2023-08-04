@@ -3,7 +3,6 @@
 	import { crossfade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import Input from '$components/ui/input/Input.svelte';
-	import Checkbox from '$components/ui/checkbox/Checkbox.svelte';
 
 	// Animation
 	const [send, receive] = crossfade({
@@ -25,7 +24,6 @@
 	// Fetch todos from the database
 	export let data;
 	let todos: { completed: boolean; id: number; description: string }[] = data.data;
-	let uid = todos.length + 1;
 
 	// CRUD
 	function add(input: any) {
@@ -99,7 +97,9 @@
 
 <!-- HTML -->
 <div class="max-w-5xl m-auto">
-	<h1 class="scroll-m-20 text-4xl text-center font-bold tracking-tight lg:text-5xl mb-8">Vercel Test</h1>
+	<h1 class="scroll-m-20 text-4xl text-center font-bold tracking-tight lg:text-5xl mb-8">
+		Vercel Test
+	</h1>
 
 	<Input
 		placeholder="Add an activity to do"
@@ -123,7 +123,7 @@
 					animate:flip
 					class="shadow-sm"
 				>
-					<Checkbox bind:checked={todo.completed} on:click={() => update(todo)} />
+					<input type="checkbox" bind:checked={todo.completed} on:click={() => update(todo)} />
 					{todo.description}
 					<button on:click={() => remove(todo)}>x</button>
 				</label>
