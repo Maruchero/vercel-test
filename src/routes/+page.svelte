@@ -2,6 +2,8 @@
 	import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
+	import Input from '$components/ui/input/Input.svelte';
+	import Checkbox from '$components/ui/checkbox/Checkbox.svelte';
 
 	// Animation
 	const [send, receive] = crossfade({
@@ -96,100 +98,105 @@
 </script>
 
 <!-- HTML -->
-<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Vercel Test</h1>
+<div class="max-w-5xl m-auto">
+	<h1 class="scroll-m-20 text-4xl text-center font-bold tracking-tight lg:text-5xl mb-8">Vercel Test</h1>
 
-<div class="board">
-	<input
-		class="new-todo"
-		placeholder="what needs to be done?"
+	<Input
+		placeholder="Add an activity to do"
 		name="description"
 		on:keyup={(event) => {
 			if (event.key === 'Enter') add(event.target);
 		}}
 	/>
 
-	<div class="left">
-		<h2>Todo</h2>
-		{#each todos.filter((t) => !t.completed) as todo (todo.id)}
-			<label in:receive={{ key: todo.id }} out:send={{ key: todo.id }} animate:flip>
-				<input type="checkbox" bind:checked={todo.completed} on:click={() => update(todo)} />
-				{todo.description}
-				<button on:click={() => remove(todo)}>x</button>
-			</label>
-		{/each}
-	</div>
+	<div class="grid grid-cols-2 gap-x-6 mt-5">
+		<div class="left">
+			<h2
+				class="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
+			>
+				Todo
+			</h2>
+			{#each todos.filter((t) => !t.completed) as todo (todo.id)}
+				<label
+					in:receive={{ key: todo.id }}
+					out:send={{ key: todo.id }}
+					animate:flip
+					class="shadow-sm"
+				>
+					<Checkbox bind:checked={todo.completed} on:click={() => update(todo)} />
+					{todo.description}
+					<button on:click={() => remove(todo)}>x</button>
+				</label>
+			{/each}
+		</div>
 
-	<div class="right">
-		<h2>Done</h2>
-		{#each todos.filter((t) => t.completed) as todo (todo.id)}
-			<label in:receive={{ key: todo.id }} out:send={{ key: todo.id }} animate:flip>
-				<input type="checkbox" bind:checked={todo.completed} on:click={() => update(todo)} />
-				{todo.description}
-				<button on:click={() => remove(todo)}>x</button>
-			</label>
-		{/each}
+		<div class="right">
+			<h2
+				class="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
+			>
+				Done
+			</h2>
+			{#each todos.filter((t) => t.completed) as todo (todo.id)}
+				<label
+					in:receive={{ key: todo.id }}
+					out:send={{ key: todo.id }}
+					animate:flip
+					class="shadow-sm"
+				>
+					<input type="checkbox" bind:checked={todo.completed} on:click={() => update(todo)} />
+					{todo.description}
+					<button on:click={() => remove(todo)}>x</button>
+				</label>
+			{/each}
+		</div>
 	</div>
 </div>
 
 <!-- STYLE -->
 <style>
-	.new-todo {
-		font-size: 1.4em;
-		width: 100%;
-		margin: 2em 0 1em 0;
-	}
-
-	.board {
-		max-width: 36em;
-		margin: 0 auto;
+	:global(body) {
+		padding: 30px 10%;
 	}
 
 	.left,
 	.right {
-		float: left;
-		width: 50%;
-		padding: 0 1em 0 0;
-		box-sizing: border-box;
-	}
-
-	h2 {
-		font-size: 2em;
-		font-weight: 200;
-		user-select: none;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
 	}
 
 	label {
-		top: 0;
-		left: 0;
-		display: block;
-		font-size: 1em;
-		line-height: 1;
-		padding: 0.5em;
-		margin: 0 auto 0.5em auto;
-		border-radius: 2px;
-		background-color: #eee;
-		user-select: none;
-	}
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		padding: 0.5em 0.8em;
+		border-radius: var(--radius);
 
-	input {
-		margin: 0;
+		background-color: hsl(var(--accent));
 	}
 
 	.right label {
-		background-color: rgb(180, 240, 100);
+		background-color: hsl(var(--muted-foreground));
+		color: hsl(var(--muted));
+		/* background-color: hsl(var(--muted-foreground)); */
 	}
 
 	button {
-		float: right;
-		height: 1em;
+		position: absolute;
+		right: 0.5em;
+
 		box-sizing: border-box;
-		padding: 0 0.5em;
 		line-height: 1;
 		background-color: transparent;
 		border: none;
-		color: rgb(170, 30, 30);
 		opacity: 0;
 		transition: opacity 0.2s;
+
+		font-size: 1.2rem;
+		font-family: inherit;
+		font-weight: bold;
+		color: hsl(var(--destructive));
 	}
 
 	label:hover button {
